@@ -1,4 +1,4 @@
-// lab1exG.c
+// lab1exG_copy.c
 // ENCM 369 Winter 2024 Lab 1 Exercise G
 
 #include <stdio.h>
