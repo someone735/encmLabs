@@ -26,7 +26,7 @@ void reverse(int *dest, const int *src, int n)
 
     k--;
   }
-
+  
   // point three
 }
 
