@@ -1,4 +1,4 @@
-// lab1exG.c
+// lab1exG_copy.c
 // ENCM 369 Winter 2024 Lab 1 Exercise G
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ int main(void)
         endIfL37:
         i++;
         if (i <= POLY_DEGREE) goto forLoop1; 
-
+    
     printf("\nPlease enter a guess at a root, and a maximum number of\n"
            "updates to do, separated by a space.\n");
     n_scanned = scanf("%lf%d", &guess, &max_updates);
@@ -48,15 +48,13 @@ int main(void)
         exit(1);
     }
 
-    
-  
     if (max_updates < 1)  {
         printf("Sorry, I must be allowed do at least one update.\n");
         exit(1);
     }
     printf("Running with initial guess %f.\n", guess);
 
-    i = POLY_DEGREE;
+    i = POLY_DEGREE-1;
     goto forLoop2;
     forLoop2:
         dfdx[i] = (i + 1) * f[i + 1];   // Calculus!
@@ -74,15 +72,14 @@ int main(void)
             flag = 1;
             goto endIfL89;
         checkUpdate:
-            if (update_count == max_updates)
-            flag = 2;
-        endIfL89:
+            if (update_count == max_updates) {flag = 2;}
+        endIfL89:;
         if (!flag) {
           current_dfdx = polyval(dfdx, POLY_DEGREE - 1, current_x);
           current_x -= current_f / current_dfdx;
           update_count++;
         }
-        if (flag != 0) goto whileLoop1;
+        if (flag == 0) goto whileLoop1;
 
     if (flag != 2) goto anticaseL101;
     printf("%d updates performed, |f(x)| still >= %g.\n", 

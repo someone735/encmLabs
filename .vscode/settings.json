@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "lab5exc.h": "c",
+        "MT6.C": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "vector": "cpp",
+        "string": "cpp",
+        "iosfwd": "cpp"
+    }
+}

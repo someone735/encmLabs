@@ -40,11 +40,12 @@ void sort_array(int *x, int n)
   int outer, inner, max, i_of_max;
   //
 
-  outer = n;
+  outer = n-1;
   goto outerForLoop;
   outerForLoop:
     i_of_max = outer;
     max = x[outer];
+
     inner = 0;
     goto innerForLoop;
     innerForLoop:
@@ -54,10 +55,11 @@ void sort_array(int *x, int n)
       }
       inner++;
       if (inner < outer) goto innerForLoop;
+
+    x[i_of_max] = x[outer];
+    x[outer] = max;
     outer--;
     if (outer > 0) goto outerForLoop;
     
-    x[i_of_max] = x[outer];
-    x[outer] = max;
   //
 }
