@@ -44,7 +44,8 @@ main:
 	sw	s0, (sp)	#save s0 for some other procedure
 	add	s0, a0, zero
 	add	s1, a1, zero
-	
+	#body
+	#prolouge
 funcA:
 	addi 
 funcB
