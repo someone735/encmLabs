@@ -37,5 +37,18 @@ main_rv:
 	.text
 	.globl	main
 main:
+	#epilouge 
+	addi 	sp, sp, -12	
+	sw	ra, 8(sp)	#save ra for return to caller
+	sw	s1, 4(sp)	#save s1 for some other procedure
+	sw	s0, (sp)	#save s0 for some other procedure
+	add	s0, a0, zero
+	add	s1, a1, zero
+	
+funcA:
+	addi 
+funcB
+
+end:
 	li      a0, 0   # return value from main = 0
 	jr	ra
