@@ -39,17 +39,48 @@ main_rv:
 
 cherry: .word 0x30000
 main:
-
-
-funcA:
+	#epilouge
 	addi 	sp, sp, -12	
 	sw	ra, 8(sp)	#save ra for return to caller
 	sw	s1, 4(sp)	#save s1 for some other procedure
 	sw	s0, (sp)	#save s0 for some other procedure
-	add	s0, a0, 0x700
+	add	s0, a0, zero	
 	add	s1, a1, zero
+	#body
+	addi	a0, zero, 3
+	addi	a1, zero, 5
+	addi 	a2, zero, 6
+	addi	a3, zero, 4
+	jal	funcA
+	add	s1, s1, a0
+	add	t0, 
 
-funcB
+funcA:
+	#epilouge
+	addi 	sp, sp, -32	
+	sw	ra, 28(sp)	#save ra for return to caller
+	sw	s6, 24(sp)	
+	sw	s5, 20(sp)
+	sw	s4, 16(sp)	
+	sw	s3, 12(sp)
+	sw	s2, 8(sp)
+	sw	s1, 4(sp)	#save s1 for some other procedure
+	sw	s0, (sp)	#save s0 for some other procedure
+	add	s0, a0, zero	
+	add	s1, a1, zero
+	add	s2, a2, zero	
+	add	s3, a3, zero
+	add	s4, a4, zero	
+	add	s5, a5, zero
+	add	s6, a6, zero	
+	#body
+	jal	funcB
+	
+funcB:
+	addi 	t0, zero,  128
+	mul 	a1, a1, t0
+	add 	a0, a0,a1
+	jr	ra
 
 end:
 	li      a0, 0   # return value from main = 0
