@@ -39,18 +39,16 @@ main_rv:
 
 cherry: .word 0x30000
 main:
-	#epilouge 
+
+
+funcA:
 	addi 	sp, sp, -12	
 	sw	ra, 8(sp)	#save ra for return to caller
 	sw	s1, 4(sp)	#save s1 for some other procedure
 	sw	s0, (sp)	#save s0 for some other procedure
-	add	s0, a0, zero
+	add	s0, a0, 0x700
 	add	s1, a1, zero
-	
-	#body
 
-funcA:
-	addi 
 funcB
 
 end:
