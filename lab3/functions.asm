@@ -35,29 +35,43 @@ main_rv:
 
 # Below is the stub for main. Edit it to give main the desired behaviour.
 	.text
-	.globl	main, cherry
-
-cherry: .word 0x30000
-main:
-	#epilouge
-	addi 	sp, sp, -12	
-	sw	ra, 8(sp)	#save ra for return to caller
-	sw	s1, 4(sp)	#save s1 for some other procedure
-	sw	s0, (sp)	#save s0 for some other procedure
-	li	s0, 0x700
-	li	s1, 0x600
-	lw	t1, cherry
+	.globl	main 
+	.globl	funcA
+	.globl	funcB
+	.globl	cherry
+	.globl	end
 	
+main:
+	#s0 = apple
+	#s1 = banana
+	#s2 = cherry
+	#prolouge
+	addi 	sp, sp, -16
+	sw	ra, 12(sp)
+	sw	s2, 8(sp)	#save s2 for cherry
+	sw	s1, 4(sp)	#save s1 for banana
+	sw	s0, (sp)	#save s0 for apple
+	li	s0, 0x700	#apple = 0x700
+	li	s1, 0x600	#banana = 0x600
+	lw	s2, 0x30000	#cherry = 0x300000
 	
 	#body
-	addi	a0, zero, 3
-	addi	a1, zero, 5
-	addi 	a2, zero, 6
-	addi	a3, zero, 4
+	li	a0, 3
+	li	a1, 5
+	li	a2, 6
+	li 	a3, 4
 	jal	funcA
 	add	s1, s1, a0
-	add	t0, 
-
+	sub	t0, s1, s0
+	add	s2, s2, t1
+	
+	#epilouge
+	lw	ra, 12(sp)
+	lw	s2, 8(sp)	
+	lw	s1, 4(sp)	
+	lw	s0, (sp)
+	addi	sp, sp, 16
+	j	end	
 funcA:
 	#prolouge
 	addi 	sp, sp, -32	
