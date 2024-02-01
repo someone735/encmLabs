@@ -44,8 +44,11 @@ main:
 	sw	ra, 8(sp)	#save ra for return to caller
 	sw	s1, 4(sp)	#save s1 for some other procedure
 	sw	s0, (sp)	#save s0 for some other procedure
-	add	s0, a0, zero	
-	add	s1, a1, zero
+	li	s0, 0x700
+	li	s1, 0x600
+	lw	t1, cherry
+	
+	
 	#body
 	addi	a0, zero, 3
 	addi	a1, zero, 5
@@ -56,7 +59,7 @@ main:
 	add	t0, 
 
 funcA:
-	#epilouge
+	#prolouge
 	addi 	sp, sp, -32	
 	sw	ra, 28(sp)	#save ra for return to caller
 	sw	s6, 24(sp)	
@@ -70,11 +73,23 @@ funcA:
 	add	s1, a1, zero
 	add	s2, a2, zero	
 	add	s3, a3, zero
-	add	s4, a4, zero	
-	add	s5, a5, zero
-	add	s6, a6, zero	
-	#body
+	add	s4, a4, zero
+	#prep for orange	
+	lw	a0, s1
+	lw	a2, s0
 	jal	funcB
+	lw	s6, a0
+	#insert after function
+	lw	a0, s3
+	lw	a1, s2
+	jal	funcB
+	lw	s4, a0	
+	
+	lw	a0, s2
+	lw	a1, s3
+	jal 	funcB
+	lw	s5, a0
+	#body
 	
 funcB:
 	addi 	t0, zero,  128
