@@ -35,7 +35,9 @@ main_rv:
 
 # Below is the stub for main. Edit it to give main the desired behaviour.
 	.text
-	.globl	main
+	.globl	main, cherry
+
+cherry: .word 0x30000
 main:
 	#epilouge 
 	addi 	sp, sp, -12	
@@ -44,8 +46,9 @@ main:
 	sw	s0, (sp)	#save s0 for some other procedure
 	add	s0, a0, zero
 	add	s1, a1, zero
+	
 	#body
-	#prolouge
+
 funcA:
 	addi 
 funcB
