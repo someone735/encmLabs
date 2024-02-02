@@ -44,7 +44,6 @@ cherry: .word 0x30000
 	.globl	funcB
 
 	
- 		
 main:
 	#s0 = apple
 	#s1 = banana
@@ -75,7 +74,7 @@ main:
 	lw	s1, 4(sp)	
 	lw	s0, (sp)
 	addi	sp, sp, 16
-	li      a0, 0   # return value from main = 0
+	li      a0, zero   # return value from main = 0
 	jr	ra	
 funcA:
 	#s0 = first
@@ -133,7 +132,7 @@ funcA:
 	jr 	ra
 	
 funcB:
-	slli
+	slli	a1, a1, 7
 	add 	a0, a0,a1	#y = y+z
 	jr	ra		#return to funcA
 
