@@ -34,26 +34,30 @@ main_rv:
 # END of start-up & clean-up code.
 
 # Below is the stub for main. Edit it to give main the desired behaviour.
+	.data
+	.globl cherry
+cherry: .word 0x30000  
+	
 	.text
 	.globl	main 
 	.globl	funcA
 	.globl	funcB
-	.globl	cherry
-	.globl	end
+
 	
+ 		
 main:
 	#s0 = apple
 	#s1 = banana
 	#s2 = cherry
 	#prolouge
 	addi 	sp, sp, -16
-	sw	ra, 12(sp)
+	sw	ra, 12(sp)	#save ra for return to caller
 	sw	s2, 8(sp)	#save s2 for cherry
 	sw	s1, 4(sp)	#save s1 for banana
 	sw	s0, (sp)	#save s0 for apple
 	li	s0, 0x700	#apple = 0x700
 	li	s1, 0x600	#banana = 0x600
-	lw	s2, 0x30000	#cherry = 0x300000
+	lw	s2, cherry	#cherry = 0x300000
 	
 	#body
 	li	a0, 3
@@ -71,46 +75,65 @@ main:
 	lw	s1, 4(sp)	
 	lw	s0, (sp)
 	addi	sp, sp, 16
-	j	end	
+	li      a0, 0   # return value from main = 0
+	jr	ra	
 funcA:
+	#s0 = first
+	#s1 = second
+	#s2 = third
+	#s3 = fourth
+	#s4 = kiwi 
+	#s5 = mango
+	#s6 = orange
 	#prolouge
-	addi 	sp, sp, -32	
-	sw	ra, 28(sp)	#save ra for return to caller
-	sw	s6, 24(sp)	
-	sw	s5, 20(sp)
-	sw	s4, 16(sp)	
-	sw	s3, 12(sp)
-	sw	s2, 8(sp)
-	sw	s1, 4(sp)	#save s1 for some other procedure
-	sw	s0, (sp)	#save s0 for some other procedure
-	add	s0, a0, zero	
-	add	s1, a1, zero
-	add	s2, a2, zero	
-	add	s3, a3, zero
-	add	s4, a4, zero
-	#prep for orange	
-	lw	a0, s1
-	lw	a2, s0
-	jal	funcB
-	lw	s6, a0
-	#insert after function
-	lw	a0, s3
-	lw	a1, s2
-	jal	funcB
-	lw	s4, a0	
+	addi 	sp, sp, -32	#increase stack by 32 bytes
+	sw	ra, 44(sp)	#save ra for return to caller
+	sw	s6, 40(sp)	#save s6 for orange 
+	sw	s5, 36(sp)	#save s5 for mango
+	sw	s4, 32(sp)	#save s4 for kiwi
+	sw	s3, 28(sp)	#save s3 for fourth
+	sw	s2, 24(sp)	#save s2 for third
+	sw	s1, 20(sp)	#save s1 for second
+	sw	s0, 16(sp)	#save s0 for first
+	add	s0, a0, zero	#s0 = first 
+	add	s1, a1, zero	#s1 = second
+	add	s2, a2, zero	#s2 = third 
+	add	s3, a3, zero	#s3 = fourth
 	
-	lw	a0, s2
-	lw	a1, s3
-	jal 	funcB
-	lw	s5, a0
 	#body
+	#for orange	
+	mv	a0, s1		#y = second
+	mv 	a2, s0		#z = first
+	jal	funcB
+	mv	s6, a0		#orange = rv of funcB(second, first)
+	#for kiwi
+	mv	a0, s3		#y = fourth
+	mv	a1, s2		#z = third
+	jal	funcB
+	mv	s4, a0		#kiwi = rv of funcB(fourth, third)
+	#for mango
+	mv	a0, s2		#y = third
+	mv	a1, s3		#z = fourth
+	jal 	funcB
+	mv	s5, a0		#mango = rv of funcB(third, fourth)
+	
+	add 	t1, s5, s6	#t1 = mango + orange
+	add 	a0, t1, s4	#a0 = t1 + kiwi
+	
+	#epilouge
+	lw	ra, 44(sp)	#save ra for return to caller
+	lw	s6, 40(sp)	#save s6 for orange 
+	lw	s5, 36(sp)	#save s5 for mango
+	lw	s4, 32(sp)	#save s4 for kiwi
+	lw	s3, 28(sp)	#save s3 for fourth
+	lw	s2, 24(sp)	#save s2 for third
+	lw	s1, 20(sp)	#save s1 for second
+	lw	s0, 16(sp)	#save s0 for first
+	addi	sp, sp, 32	#decrease stack by 32 bytes 
+	jr 	ra
 	
 funcB:
-	addi 	t0, zero,  128
-	mul 	a1, a1, t0
-	add 	a0, a0,a1
-	jr	ra
+	slli
+	add 	a0, a0,a1	#y = y+z
+	jr	ra		#return to funcA
 
-end:
-	li      a0, 0   # return value from main = 0
-	jr	ra
