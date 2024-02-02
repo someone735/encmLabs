@@ -49,9 +49,16 @@ main:
 	addi	a1, t0, 24	# a1 = &foo[6]
 	jal	swap
 
-	# Students: Replace this comment with code to correctly
-	# implement the next two calls to swap in main in swap.c.
-
+	la	t0, foo
+	addi	a0, t0, 4
+	addi	a1, t0, 20
+	jal	swap
+	
+	la	t0, foo
+	addi	a0, t0, 8
+	addi	a1, t0, 16
+	jal	swap
+	
 	add	a0, zero, zero		
 	lw	ra, 0(sp)
 	addi	sp, sp, 32
@@ -62,7 +69,9 @@ main:
 	.text
 	.globl  swap
 swap:
-	# Students: Replace this comment with code to make swap
-	# do its job correctly.
-
+	lw	t0, (a0)
+	lw	t1, (a1)
+	 
+	sw 	t0, (a1)
+	sw	t1, (a0)
 	jr	ra

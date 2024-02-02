@@ -49,14 +49,15 @@ main:
 	#s1 = banana
 	#s2 = cherry
 	#prolouge
-	addi 	sp, sp, -16
-	sw	ra, 12(sp)	#save ra for return to caller
-	sw	s2, 8(sp)	#save s2 for cherry
+	addi 	sp, sp, -12
+	sw	ra, 8(sp)	#save ra for return to caller
 	sw	s1, 4(sp)	#save s1 for banana
 	sw	s0, (sp)	#save s0 for apple
 	li	s0, 0x700	#apple = 0x700
 	li	s1, 0x600	#banana = 0x600
-	lw	s2, cherry	#cherry = 0x300000
+	la	t3, cherry	#t3 = &cherry
+	lw	t2, (t3)	#t2 = 0x300000
+	
 	
 	#body
 	li	a0, 3
@@ -64,16 +65,17 @@ main:
 	li	a2, 6
 	li 	a3, 4
 	jal	funcA
-	add	s1, s1, a0
-	sub	t0, s1, s0
-	add	s2, s2, t1
+	add	s1, s1, a0	#s1 = s1 + rv from funcA
+	sub	t4, s1, s0	#t1 = s1 - s0
+	add	t2, t2, t4	#t0 = t0 + t1
+	sw 	t2,(t3)		
 	
 	#epilouge
-	lw	ra, 12(sp)
-	lw	s2, 8(sp)	
-	lw	s1, 4(sp)	
-	lw	s0, (sp)
-	addi	sp, sp, 16
+	lw	s0, (sp)	#load s0
+	lw	s1, 4(sp)	#load s1
+	lw	ra, 8(sp)	#load ra
+	addi	sp, sp, 12
+	
 	li      a0, 0   # return value from main = 0
 	jr	ra	
 funcA:
@@ -86,14 +88,14 @@ funcA:
 	#s6 = orange
 	#prolouge
 	addi 	sp, sp, -32	#increase stack by 32 bytes
-	sw	ra, 44(sp)	#save ra for return to caller
-	sw	s6, 40(sp)	#save s6 for orange 
-	sw	s5, 36(sp)	#save s5 for mango
-	sw	s4, 32(sp)	#save s4 for kiwi
-	sw	s3, 28(sp)	#save s3 for fourth
-	sw	s2, 24(sp)	#save s2 for third
-	sw	s1, 20(sp)	#save s1 for second
-	sw	s0, 16(sp)	#save s0 for first
+	sw	ra, 28(sp)	#save ra for return to caller
+	sw	s6, 24(sp)	#save s6 for orange 
+	sw	s5, 20(sp)	#save s5 for mango
+	sw	s4, 16(sp)	#save s4 for kiwi
+	sw	s3, 12(sp)	#save s3 for fourth
+	sw	s2, 8(sp)	#save s2 for third
+	sw	s1, 4(sp)	#save s1 for second
+	sw	s0, 0(sp)	#save s0 for first
 	add	s0, a0, zero	#s0 = first 
 	add	s1, a1, zero	#s1 = second
 	add	s2, a2, zero	#s2 = third 
@@ -102,7 +104,7 @@ funcA:
 	#body
 	#for orange	
 	mv	a0, s1		#y = second
-	mv 	a2, s0		#z = first
+	mv 	a1, s0		#z = first
 	jal	funcB
 	mv	s6, a0		#orange = rv of funcB(second, first)
 	#for kiwi
@@ -114,25 +116,25 @@ funcA:
 	mv	a0, s2		#y = third
 	mv	a1, s3		#z = fourth
 	jal 	funcB
-	mv	s5, a0		#mango = rv of funcB(third, fourth)
+	mv	s5, a0	#mango = rv of funcB(third, fourth)
 	
 	add 	t1, s5, s6	#t1 = mango + orange
 	add 	a0, t1, s4	#a0 = t1 + kiwi
 	
 	#epilouge
-	lw	ra, 44(sp)	#save ra for return to caller
-	lw	s6, 40(sp)	#save s6 for orange 
-	lw	s5, 36(sp)	#save s5 for mango
-	lw	s4, 32(sp)	#save s4 for kiwi
-	lw	s3, 28(sp)	#save s3 for fourth
-	lw	s2, 24(sp)	#save s2 for third
-	lw	s1, 20(sp)	#save s1 for second
-	lw	s0, 16(sp)	#save s0 for first
+	lw	s0, 0(sp)	#load s0 for first
+	lw	s1, 4(sp)	#load s1 for second
+	lw	s2, 8(sp)	#load s2 for third
+	lw	s3, 12(sp)	#load s3 for fourth
+	lw	s4, 16(sp)	#load s4 for kiwi
+	lw	s5, 20(sp)	#load s5 for mango
+	lw	s6, 24(sp)	#load s6 for orange 
+	lw	ra, 28(sp)	#load ra for return to caller
 	addi	sp, sp, 32	#decrease stack by 32 bytes 
 	jr 	ra
 	
 funcB:
-	slli	a1, a1, 7
-	add 	a0, a0,a1	#y = y+z
+	slli	t0, a1, 7	#t0 = z*(2^7)
+	add 	a0, a0,t0	#y = y+z
 	jr	ra		#return to funcA
 
