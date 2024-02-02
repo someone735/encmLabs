@@ -74,7 +74,7 @@ main:
 	lw	s1, 4(sp)	
 	lw	s0, (sp)
 	addi	sp, sp, 16
-	li      a0, zero   # return value from main = 0
+	li      a0, 0   # return value from main = 0
 	jr	ra	
 funcA:
 	#s0 = first
