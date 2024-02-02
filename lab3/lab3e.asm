@@ -34,13 +34,6 @@ main_rv:
 # END of start-up & clean-up code.
 
 # Below is the stub for main. Edit it to give main the desired behaviour.
-	.text
-	.globl	main
-	.globl 	sat
-	.globl 	sum_of_seats
-	.globl	firstCase
-	.globl	secondCase
-	
 	.data 
 	.globl aaa
 	.globl bbb
@@ -49,11 +42,21 @@ aaa: .word 11,11,3,-11
 bbb: .word 200, -300, 400, 500
 ccc: .word -2,-3,2,1,2,3
 
+	.text
+	.globl	main
+	.globl 	sat
+	.globl 	sum_of_seats
+	.globl	firstCase
+	.globl	secondCase
+	.globl	endSum_of_seats
+	.globl 	forLoop
+
+
 
 
 main:
 	
-	add 	sp, sp, -16
+	addi 	sp, sp, -16
 	sw 	ra, 12(sp)
 	sw 	s2, 8(sp)
 	sw 	s1, 4(sp)
@@ -86,7 +89,7 @@ main:
 	lw 	s2, 8(sp)
 	lw 	s1, 4(sp)
 	lw 	s0, (sp)
-	add 	sp, sp, 16
+	addi 	sp, sp, 16
 	li      a0, 0   # return value from main = 0
 	jr	ra
 		
@@ -105,7 +108,7 @@ secondCase:
 	jr 	ra
 	
 sum_of_seats: 
-	add	sp, sp, -20
+	addi	sp, sp, -20
 	sw	s4, 32(sp)
 	sw	s3, 28(sp)
 	sw	s2, 24(sp)
@@ -113,22 +116,14 @@ sum_of_seats:
 	sw	s0, 16(sp)
 	addi	s4, zero, 0
 	addi	s3, zero, 0
-	lw	s2, a2
-	lw	s1, a1
-	la	s0, a0
+	add	s2, zero, a2
+	add	s1, zero, a1
+	add	s0, zero, a0
 	j	forLoop
 
-endSum_of_seats:
-	lw	s4, 32(sp)
-	lw	s3, 28(sp)
-	lw	s2, 24(sp)
-	lw	s1, 20(sp)
-	lw	s0, 16(sp)
-	add	sp, sp, 20
-	jr 	ra
 	
 forLoop:
-`	ble	s3, s2, endSum_of_seats
+	ble	s3, s2, endSum_of_seats
 	add 	a0, s0, s3
 	add	a1, s1, zero
 	jal	sat
@@ -136,3 +131,11 @@ forLoop:
 	addi	s3, s3, 4
 	j forLoop
 	
+endSum_of_seats:
+	lw	s4, 32(sp)
+	lw	s3, 28(sp)
+	lw	s2, 24(sp)
+	lw	s1, 20(sp)
+	lw	s0, 16(sp)
+	addi	sp, sp, 20
+	jr 	ra
