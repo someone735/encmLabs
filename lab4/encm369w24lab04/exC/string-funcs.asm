@@ -36,11 +36,29 @@ main_rv:
 #
 	.text
 	.globl	copycat
+	.globl	copycatEnd
+	.globl	CCwhileLoop
 copycat:
+	#prologue
+	# Students: Replace this comment with appropriate code
+	lbu 	t0, (a1)
+	lbu	t2, 10 
+	beq 	t0, t2, CCwhileLoop
+	sb	t0, (a0)
+	addi	a0, a0, 1
+	addi	a1, a1, 1
+	j	copycat
 
-	# Students: Replace this comment with appropriate code.
+copycatEnd:
 	
 	jr	ra
+	
+CCwhileLoop:
+	lbu	t0, (a2)
+	lbu	t2, 10
+	beq	t0, t2, copycatEnd
+	
+	
 	
 
 #	void lab4reverse(const char *str)
@@ -50,7 +68,7 @@ copycat:
 lab4reverse:
 
 	# Students: Replace this comment with appropriate code.
-
+	
 	jr	ra
 
 	
