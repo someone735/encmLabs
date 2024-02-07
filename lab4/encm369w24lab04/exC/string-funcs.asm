@@ -37,26 +37,41 @@ main_rv:
 	.text
 	.globl	copycat
 	.globl	copycatEnd
+	.globl 	CCforLoop
+	.globl	CCwhileLoopPre
 	.globl	CCwhileLoop
+	.data
+newline:.asciz "/n"
 copycat:
 	#prologue
 	# Students: Replace this comment with appropriate code
-	lbu 	t0, (a1)
-	lbu	t2, 10 
-	beq 	t0, t2, CCwhileLoop
-	sb	t0, (a0)
+	li	t0, 0		#t0 = 0
+	lbu	t2, newLine 		#t2 = "/n"
+	lbu	t1, (a1)		#t1 = *src1
+	j	CCforLoop
+
+CCforLoop:
+	beq 	t0, t2, CCwhileLoop	#if (t0 == "/n") goto CCwhileLoop
+	add	t3, t1, t0
+	sb	t3, (a0)
 	addi	a0, a0, 1
-	addi	a1, a1, 1
+	addi	t0, t0, 1
 	j	copycat
 
 copycatEnd:
-	
 	jr	ra
 	
+CCwhileLoopPre:
+	add	a0, t0, a0
+	j	CCwhileLoop
+
 CCwhileLoop:
-	lbu	t0, (a2)
-	lbu	t2, 10
-	beq	t0, t2, copycatEnd
+	beq	a0, t2, copycatEnd
+	sb	a1, (a0)
+	addi	a1, a1, 1
+	addi	a0, a0, 1
+	j	CCwhileLoop
+	
 	
 	
 	
