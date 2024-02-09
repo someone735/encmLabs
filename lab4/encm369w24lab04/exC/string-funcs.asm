@@ -34,27 +34,25 @@ main_rv:
 
 #	void copycat(char *dest, const char *src1, const char *src2)
 #
+
 	.text
 	.globl	copycat
 	.globl	copycatEnd
 	.globl 	CCforLoop
 	.globl	CCwhileLoopPre
 	.globl	CCwhileLoop
-	.data
-newline:.asciz "/n"
+
 copycat:
 	#prologue
 	# Students: Replace this comment with appropriate code
-	li	t0, 0		#t0 = 0
-	lbu	t2, newLine 		#t2 = "/n"
-	lbu	t1, (a1)		#t1 = *src1
+	lbu	t1, (a0)		#t1 = *dest
+	lbu	t0, (a1)		#t0 = *src1
 	j	CCforLoop
 
 CCforLoop:
-	beq 	t0, t2, CCwhileLoop	#if (t0 == "/n") goto CCwhileLoop
-	add	t3, t1, t0
-	sb	t3, (a0)
-	addi	a0, a0, 1
+	beq 	t0, zero, CCwhileLoop	#if (t0 == "/0") goto CCwhileLoop		
+	sb	t0, (t1)
+	addi	t1, t1, 1
 	addi	t0, t0, 1
 	j	copycat
 
@@ -62,14 +60,15 @@ copycatEnd:
 	jr	ra
 	
 CCwhileLoopPre:
-	add	a0, t0, a0
+	lbu	t0, (a2)
 	j	CCwhileLoop
 
 CCwhileLoop:
-	beq	a0, t2, copycatEnd
-	sb	a1, (a0)
-	addi	a1, a1, 1
-	addi	a0, a0, 1
+
+	beq	t0, zero, copycatEnd
+	sb	t0, (t1)
+	addi	t0, t0, 1
+	addi	t1, t1, 1
 	j	CCwhileLoop
 	
 	
