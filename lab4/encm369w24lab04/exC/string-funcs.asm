@@ -41,7 +41,6 @@ main_rv:
 	.globl	CCwhileLoop
 
 copycat:
-	#prologue
 	# Students: Replace this comment with appropriate code
 	lbu	t2, (a1) 		# t2 = *src1
 	beq 	t2, zero, CCwhileLoop	#if (t0 == "/0") goto CCwhileLoop		
