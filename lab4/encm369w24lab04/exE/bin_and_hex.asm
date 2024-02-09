@@ -178,15 +178,63 @@ write_in_hex:
 # with code that implements the given C code.
 	.text
 	.globl	write_in_binary
+	.globl	whileLoop
+	.globl	elseCaseFirst
+	.globl	next1
+	.globl	next2
+	.globl	ifCase2
+	.globl	nextLoopPrep
+	.globl	endLoop
 write_in_binary:
 
 	# Time-saving hint: This is a leaf procedure!
 	# Leave str and word in a0 and a1, and
 	# use t-registers for local variables.
-
-	# Get rid of the next 3 lines before writing a solution. 
-	li	t0, '?'
-	sb	t0, 0(a0)		# str[0] = 'Z'
-	sb	zero, 1(a0)		# terminate string
+	# t0 = digit0
+	# t1 = digit1
+	# t2 = squote
+	# t3 = bit_index
+	# t4 = char_index
 	
+	li 	t0, '0'		#digit0 = '0'
+	li 	t1, '1'		#digit1 = '1'
+	li 	t2, '\''	#squote	= '\''
+	li 	t3, 0		#bit_index = 0
+	li 	t4, 40		#char_index = 40
+	j 	whileLoop
+
+whileLoop:
+	andi 	t5, a1, 1		# t5 = word & 1
+	beqz 	t5, elseCaseFirst	# if (t5 == 0) goto elseCaseFirst
+	add	t5, a0, t4		# t5 = &word + char_index
+	sb	t1, (t5)		# word[char_index] = '1'
+	j	next1
+elseCaseFirst:
+	add	t5, a0, t4		# t5 = &word + char_index
+	sb	t0, (t5)		# word[char_index] = '0'
+	j	next1
+next1:
+	li	t5, 31			# t5 = 31
+	beq	t3, t5, endLoop		# if (bit_index == 31) goto endLoop
+	j	next2			
+	
+next2:
+	andi	t5, t3, 3		# t5 = bit_index & 3
+	li 	t6, 3			# t6 = 3
+	beq	t5, t6, ifCase2		# if (t5 == t6) goto ifCase2
+	j	nextLoopPrep
+
+ifCase2:
+	addi	t4, t4, -1		# char_index--
+	add	t5, a0, t4		# t5 = &word + char_index
+	sb	t2, (t5)		# word[char_index] = '\''
+	j	nextLoopPrep
+
+nextLoopPrep:
+	addi	t3, t3, 1		# bit_index++
+	addi	t4, t4, -1		# char_index--
+	srli	a1, a1, 1		# word = word >> 1
+	j	whileLoop	
+	
+endLoop:
 	jr	ra

@@ -38,51 +38,67 @@ main_rv:
 	.text
 	.globl	copycat
 	.globl	copycatEnd
-	.globl 	CCforLoop
-	.globl	CCwhileLoopPre
 	.globl	CCwhileLoop
 
 copycat:
 	#prologue
 	# Students: Replace this comment with appropriate code
-	lbu	t1, (a0)		#t1 = *dest
-	lbu	t0, (a1)		#t0 = *src1
-	j	CCforLoop
-
-CCforLoop:
-	beq 	t0, zero, CCwhileLoop	#if (t0 == "/0") goto CCwhileLoop		
-	sb	t0, (t1)
-	addi	t1, t1, 1
-	addi	t0, t0, 1
+	lbu	t2, (a1) 		# t2 = *src1
+	beq 	t2, zero, CCwhileLoop	#if (t0 == "/0") goto CCwhileLoop		
+	sb	t2, (a0)		# *dest = t2
+	addi 	a1, a1, 1		# src1++
+	addi	a0, a0, 1		# dest++
 	j	copycat
 
 copycatEnd:
+	sb	zero, (a0)	# *a0 = 0
 	jr	ra
 	
-CCwhileLoopPre:
-	lbu	t0, (a2)
-	j	CCwhileLoop
-
 CCwhileLoop:
-
-	beq	t0, zero, copycatEnd
-	sb	t0, (t1)
-	addi	t0, t0, 1
-	addi	t1, t1, 1
+	lbu	t1, (a2)		# t1 = *src2
+	beq	t1, zero, copycatEnd
+	sb	t1, (a0)		# *dest = t1
+	addi	a2, a2, 1		# src2++
+	addi	a0, a0, 1		# dest++
 	j	CCwhileLoop
 	
-	
-	
-	
-
 #	void lab4reverse(const char *str)
 #	
 	.text
 	.globl	lab4reverse
+	.globl	rWhileLoopFindEnd
+	.globl	rWhileLoopPre
+	.globl	rWhileLoop
+	.globl	reverseEnd
+	
 lab4reverse:
-
 	# Students: Replace this comment with appropriate code.
 	
+	mv	t0, a0			# left = &str
+	j 	rWhileLoopFindEnd
+	
+rWhileLoopFindEnd:
+	lbu	t1, (a0)		# t1 = *str
+	beq 	t1, zero, rWhileLoopPre	# if (t1 == 0) goto rWhileLoopPre
+	addi	a0, a0, 1		# str++
+	j	rWhileLoopFindEnd
+	
+rWhileLoopPre:
+	addi 	a0, a0, -1 		# str--
+	lbu	t1, (a0)		# t1 = *str
+	j	rWhileLoop
+
+rWhileLoop:
+	bge	t0, a0, reverseEnd	# if (left >= str) goto reverseEnd
+	lbu	t2, (t0)		# t2 = *left
+	lbu	t1, (a0)		# t1 = *str
+	sb	t1, (t0)		# *left = t1
+	sb	t2, (a0)		# *str = t2
+	addi	t0, t0, 1		# left++
+	addi	a0, a0, -1		# str--
+	j	rWhileLoop
+	
+reverseEnd:
 	jr	ra
 
 	
