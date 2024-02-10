@@ -201,6 +201,10 @@ write_in_binary:
 	li 	t2, '\''	#squote	= '\''
 	li 	t3, 0		#bit_index = 0
 	li 	t4, 40		#char_index = 40
+	sb	t0, (a0)	# str[0] = '0'
+	li	t5, 'b'		# t5 = 'b'
+	sb	t5, 1(a0)	# str[1] = 'b'
+	sb	zero, 41(a0)
 	j 	whileLoop
 
 whileLoop:
