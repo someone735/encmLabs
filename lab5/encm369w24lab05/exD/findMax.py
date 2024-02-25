@@ -32,6 +32,12 @@ b = (sum(fast2)/3)
 
 # print(b/a)
 
+print(f'Quickest times for use_pointers: {fast1}' )
+print(f'Quickest times for use_indexes: {fast2}' )
+print(f'Average quickest time for use_pointers: ({fast1[0]} + {fast1[1]} + {fast1[2]})/3 = {a}')
+print(f'Average quickest time for use_indexes: ({fast2[0]} + {fast2[1]} + {fast2[2]})/3 = {b:.3f}')
+print(f'Speedup (use_indexes / use_pointers): {b:.3f}/{a} = {b/a:.3f} \n')
+
 o2arr1 = [53704.00, 49454.00, 49503.00, 
           49421.00, 49528.00, 49502.00, 
           49491.00, 51998.00, 49415.00, 
@@ -62,6 +68,13 @@ for x in o2arr2[3:]:
 c = (sum(o2fast1)/3)
 d = (sum(o2fast2)/3)
 
+print(f'Quickest times for use_pointers: {o2fast1}' )
+print(f'Quickest times for use_indexes: {o2fast2}' )
+print(f'Average quickest time for use_pointers: ({o2fast1[0]} + {o2fast1[1]} + {o2fast1[2]})/3 = {c:.3f}')
+print(f'Average quickest time for use_indexes: ({o2fast2[0]} + {o2fast2[1]} + {o2fast2[2]})/3 = {d:.3f}')
+print(f'Speedup (use_pointers (no-opt) / use_pointers (O2)): {a}/{c:.3f} = {a/c:.3f}')
+print(f'Speedup (use_indexes (no-opt) / use_indexes (O2)): {b:.3f}/{d:.3f} = {b/d:.3f} \n')
+
 # print(a/c)
 # print(b/d)
 
@@ -75,8 +88,8 @@ unrollarr2 = [47024.00, 46937.00, 46968.00,
               45895.00]
 
 unrollfast1 = [x for x in unrollarr1[:3]]
-unrollfast2 = [x for x in unrollarr2[:3]]
 
+unrollfast2 = [x for x in unrollarr2[:3]]
 for x in unrollarr1[3:]:
     for i,j in enumerate(unrollfast1):
         if x < j:
@@ -92,5 +105,12 @@ for x in unrollarr2[3:]:
 e = (sum(unrollfast1)/3)
 f = (sum(unrollfast2)/3)
 
-print(c/e)
-print(d/f)
+print(f'Quickest times for use_pointers: {unrollfast1}' )
+print(f'Quickest times for use_indexes: {unrollfast2}' )
+print(f'Average quickest time for use_pointers: ({unrollfast1[0]} + {unrollfast1[1]} + {unrollfast1[2]})/3 = {e:.3f}')
+print(f'Average quickest time for use_indexes: ({unrollfast2[0]} + {unrollfast2[1]} + {unrollfast2[2]})/3 = {f:.3f}')
+print(f'Speedup (use_pointers (O2) / use_pointers (unroll)): {c:.3f}/{e:.3f} = {c/e:.3f}')
+print(f'Speedup (use_indexes (O2) / use_indexes (unroll)): {d:.3f}/{f:.3f} = {d/f:.3f}')
+
+# print(c/e)
+# print(d/f)
