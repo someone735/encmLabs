@@ -78,6 +78,11 @@ ifEqBig:
 	ble		a1, 0, ifSrcPos
 	
 ifSrcPos:
+	#prologue
+	addi 	sp, sp, -8
+	sw		s0, (sp)
+	sw		ra, 4(sp)
+
 
 endInt2str:
 	sb	zero, (a0)
