@@ -56,73 +56,72 @@ int2str:
 	
 	# Replace these two comment lines and the following instruction with
 	# code to match the definition of int2str in int2str.c.
-	beqz 	a1, ifEq0
-	li 	t6, -2147483648
-	beq 	a1, t6, ifEqWeird
-	bge	a1, zero, ifPositive
-	mv	t0, a1
+	beqz 	a1, ifEq0		#if (src == 0) goto ifEq0
+	li 	t6, -2147483648		#t6 = -2147483648
+	beq 	a1, t6, ifEqWeird	#if (src == -2147483648), goto ifEqWeird	
+	blt	a1, zero, ifPositive	#if (src < 0), goto ifPositive
+	mv	t0, a1			#abs_src = src
 	j	prepWhileLoop
 	
 ifEq0:
-	li	t6, '0'
-	sb	t6, (s0)
-	li	t6, '\0'
-	sb	t6, 1(s0)
+	li	t6, '0'			#t6 = '0'
+	sb	t6, (a0)		#dest[0] = '0'
+	sb	zero, 1(a0)		#dest[1] = '\0'
 	j 	endInt2str
 
 ifEqWeird:
-	li 	t0, 0x80000000
+	li 	t0, 0x80000000		#abs_src = 0x80000000
 	j	prepWhileLoop
 
 ifPositive:
-	sub	t0, zero, a1
+	sub	t0, zero, a1		#abs_src = -src
 	j	prepWhileLoop
 
 prepWhileLoop:
-	mv	t4, a0
-	li	t1, 10
+	mv	t4, a0			#p = dest
+	li	t1, 10			#ten = 10
 	j	whileLoop
 	
-	
 whileLoop:
-	rem	t2, t0, t1
-	lb	t6, digits
-	add	t6, t6, t2
-	sb	t6, (t4)
-	addi	t2, t2, 1
-	div	t0, t0, t1
-	beq	t0, zero, breakLoop
+	remu	t2, t0, t1		#rem = abs_src % ten
+	la	t6, digits		#t6 = &digits
+	add	t6, t6, t2		#t6 = &digits + rem
+	lb	t6, (t6)		#t6 = digits[rem]
+	sb	t6, (t4)		#*p = t6
+	addi	t4, t4, 1		#p++
+	divu	t0, t0, t1		#abs_src /= ten
+	beqz	t0, breakLoop		#if (abs_src == 0), goto breakLoop
+	j	whileLoop
 
 breakLoop:
-	bge	a1, zero, ifEq0Aft
-	li	t6, '\0'
-	sb	t6, (t4)
+	blt	a1, zero, ifPosAft	#if (src < 0), goto ifPosAft 
 	j	prepReverse
 
-ifEq0Aft:
-	li	t6, '-'
-	sb	t6, (t4)
-	addi	t4, t4, 1
+ifPosAft:
+	li	t6, '-'			#t6 = '-'
+	sb	t6, (t4)		#*p = '-'
+	addi	t4, t4, 1		#p++
 	j	prepReverse
 	
 prepReverse:
-	li 	t6, 1
-	sub	t5, t4, t6
-	mv	t4, a0
+	sb	zero, (t4)		#p = '/0'
+	addi	t5, t4, -1		#q = p - 1
+	mv	t4, a0			#p = dest
 	j 	reverse
 	
 reverse:
-	lbu	t3, (t4)
-	lbu	t6, (t5)
-	sb	t6, (t4)
-	sb	t3, (t5)
-	addi	t4, t4, 1
-	addi	t5, t5, -1
-	bge	t4, t5, endInt2str
+	lbu	t3, (t4)		#temp = *p
+	lbu	t6, (t5)		#t6 = *q
+	sb	t6, (t4)		#*p = *q
+	sb	t3, (t5)		#*q = temp
+	addi	t4, t4, 1		#p++
+	addi	t5, t5, -1		#q--
+	bge	t4, t5, endInt2str	#if (p >= q), goto endInt2str
+	j	reverse
 
 
 endInt2str:
-	sb	zero, (a0)
+	#sb	zero, (a0)
 			
 	jr	ra
 	
