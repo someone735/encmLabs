@@ -56,32 +56,69 @@ int2str:
 	
 	# Replace these two comment lines and the following instruction with
 	# code to match the definition of int2str in int2str.c.
-	#prologue 
-	addi	sp, sp, -12
-	sw		s0, (sp)
-	sw		s1, 4(sp)
-	sw		ra, 8(sp)
-	la		a0, s0
-	lw		a1, s1
-
-	beqz 	s1, ifEq0
-	li 		t0, -2147483648
-	beq 	s1, t0, ifEqBig
-ifEq0:
-	sb		'0', s0
-	sb		'\0', 1(s0)
-
-	j 		endInt2str
-
-ifEqBig:
-	li 		t0, 0x80000000u
-	ble		a1, 0, ifSrcPos
+	beqz 	a1, ifEq0
+	li 	t6, -2147483648
+	beq 	a1, t6, ifEqWeird
+	bge	a1, zero, ifPositive
+	mv	t0, a1
+	j	prepWhileLoop
 	
-ifSrcPos:
-	#prologue
-	addi 	sp, sp, -8
-	sw		s0, (sp)
-	sw		ra, 4(sp)
+ifEq0:
+	li	t6, '0'
+	sb	t6, (s0)
+	li	t6, '\0'
+	sb	t6, 1(s0)
+	j 	endInt2str
+
+ifEqWeird:
+	li 	t0, 0x80000000
+	j	prepWhileLoop
+
+ifPositive:
+	sub	t0, zero, a1
+	j	prepWhileLoop
+
+prepWhileLoop:
+	mv	t4, a0
+	li	t1, 10
+	j	whileLoop
+	
+	
+whileLoop:
+	rem	t2, t0, t1
+	lb	t6, digits
+	add	t6, t6, t2
+	sb	t6, (t4)
+	addi	t2, t2, 1
+	div	t0, t0, t1
+	beq	t0, zero, breakLoop
+
+breakLoop:
+	bge	a1, zero, ifEq0Aft
+	li	t6, '\0'
+	sb	t6, (t4)
+	j	prepReverse
+
+ifEq0Aft:
+	li	t6, '-'
+	sb	t6, (t4)
+	addi	t4, t4, 1
+	j	prepReverse
+	
+prepReverse:
+	li 	t6, 1
+	sub	t5, t4, t6
+	mv	t4, a0
+	j 	reverse
+	
+reverse:
+	lbu	t3, (t4)
+	lbu	t6, (t5)
+	sb	t6, (t4)
+	sb	t3, (t5)
+	addi	t4, t4, 1
+	addi	t5, t5, -1
+	bge	t4, t5, endInt2str
 
 
 endInt2str:
